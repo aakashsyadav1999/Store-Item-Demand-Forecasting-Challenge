@@ -19,3 +19,4 @@ class DataIngestionConfig:
         self.unzip_dir:str = os.path.join(
             self.data_ingestion_artifacts_dir
         )
+
