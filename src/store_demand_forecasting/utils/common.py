@@ -1,130 +1,156 @@
-import os
-from box.exceptions import BoxValueError
+import sys
+from typing import Dict
+import dill
+import pickle
+import numpy as np
 import yaml
-from src.store_demand_forecasting.logger import logger
-import json
-import joblib
+from zipfile import Path
+from src.store_demand_forecasting.constants import *
+from src.store_demand_forecasting.exception import NerException
+from src.store_demand_forecasting.logger import logging
 from ensure import ensure_annotations
-from box import ConfigBox
-from pathlib import Path
-from typing import Any
+
+# initiatlizing logging
 
 
+class MainUtils:
 
-@ensure_annotations
-def read_yaml(path_to_yaml: Path) -> ConfigBox:
-    """reads yaml file and returns
+    @ensure_annotations
+    def get_size(path: Path) -> str:
+        """get size in KB
 
-    Args:
-        path_to_yaml (str): path like input
+        Args:
+            path (Path): path of the file
 
-    Raises:
-        ValueError: if yaml file is empty
-        e: empty file
-
-    Returns:
-        ConfigBox: ConfigBox type
+        Returns:
+            str: size in KB
     """
-    try:
-        with open(path_to_yaml) as yaml_file:
-            content = yaml.safe_load(yaml_file)
-            logger.info(f"yaml file: {path_to_yaml} loaded successfully")
-            return ConfigBox(content)
-    except BoxValueError:
-        raise ValueError("yaml file is empty")
-    except Exception as e:
-        raise e
-    
+        size_in_kb = round(os.path.getsize(path)/1024)
+        return f"~ {size_in_kb} KB"
+    def read_yaml_file(self, filename: str) -> Dict:
+        logging.info("Entered the read_yaml_file method of MainUtils class")
+        try:
+            with open(filename, "rb") as yaml_file:
+                return yaml.safe_load(yaml_file)
 
+        except Exception as e:
+            raise NerException(e, sys) from e
 
-@ensure_annotations
-def create_directories(path_to_directories: list, verbose=True):
-    """create list of directories
+    @staticmethod
+    def dump_pickle_file(output_filepath: str, data) -> None:
+        try:
+            with open(output_filepath, "wb") as encoded_pickle:
+                pickle.dump(data, encoded_pickle)
 
-    Args:
-        path_to_directories (list): list of path of directories
-        ignore_log (bool, optional): ignore if multiple dirs is to be created. Defaults to False.
-    """
-    for path in path_to_directories:
-        os.makedirs(path, exist_ok=True)
-        if verbose:
-            logger.info(f"created directory at: {path}")
+        except Exception as e:
+            raise NerException(e, sys) from e
 
+    @staticmethod
+    def load_pickle_file(filepath: str) -> object:
+        try:
+            with open(filepath, "rb") as pickle_obj:
+                obj = pickle.load(pickle_obj)
+            return obj
 
-@ensure_annotations
-def save_json(path: Path, data: dict):
-    """save json data
+        except Exception as e:
+            raise NerException(e, sys) from e
 
-    Args:
-        path (Path): path to json file
-        data (dict): data to be saved in json file
-    """
-    with open(path, "w") as f:
-        json.dump(data, f, indent=4)
+    def save_numpy_array_data(self, file_path: str, array: np.array) -> str:
+        logging.info("Entered the save_numpy_array_data method of MainUtils class")
+        try:
+            with open(file_path, "wb") as file_obj:
+                np.save(file_obj, array)
+            logging.info("Exited the save_numpy_array_data method of MainUtils class")
+            return file_path
 
-    logger.info(f"json file saved at: {path}")
+        except Exception as e:
+            raise NerException(e, sys) from e
 
+    def load_numpy_array_data(self, file_path: str) -> np.array:
+        logging.info("Entered the load_numpy_array_data method of MainUtils class")
+        try:
+            with open(file_path, "rb") as file_obj:
+                return np.load(file_obj)
 
+        except Exception as e:
+            raise NerException(e, sys) from e
 
+    @staticmethod
+    def save_object(file_path: str, obj: object) -> None:
+        logging.info("Entered the save_object method of MainUtils class")
+        try:
+            with open(file_path, "wb") as file_obj:
+                dill.dump(obj, file_obj)
 
-@ensure_annotations
-def load_json(path: Path) -> ConfigBox:
-    """load json files data
+            logging.info("Exited the save_object method of MainUtils class")
 
-    Args:
-        path (Path): path to json file
+            return file_path
 
-    Returns:
-        ConfigBox: data as class attributes instead of dict
-    """
-    with open(path) as f:
-        content = json.load(f)
+        except Exception as e:
+            raise NerException(e, sys) from e
 
-    logger.info(f"json file loaded succesfully from: {path}")
-    return ConfigBox(content)
+    @staticmethod
+    def load_object(file_path: str) -> object:
+        logging.info("Entered the load_object method of MainUtils class")
+        try:
+            with open(file_path, "rb") as file_obj:
+                obj = dill.load(file_obj)
+            logging.info("Exited the load_object method of MainUtils class")
+            return obj
 
+        except Exception as e:
+            raise NerException(e, sys) from e
 
-@ensure_annotations
-def save_bin(data: Any, path: Path):
-    """save binary file
+    @staticmethod
+    def read_txt_file(file_path: str) -> str:
+        logging.info("Entered the read_txt_file method of MainUtils class")
+        try:
+            # Opening file for read only
+            file1 = open(file_path, "r", encoding="utf8")
+            # read all text
+            text = file1.readlines()
+            # close the file
+            file1.close()
+            logging.info("Exited the read_txt_file method of MainUtils class")
+            return text
 
-    Args:
-        data (Any): data to be saved as binary
-        path (Path): path to binary file
-    """
-    joblib.dump(value=data, filename=path)
-    logger.info(f"binary file saved at: {path}")
+        except Exception as e:
+            raise NerException(e, sys) from e
 
+    @staticmethod
+    def save_descriptions(descriptions, filename) -> None:
+        try:
+            lines = list()
+            for key, desc_list in descriptions.items():
+                for desc in desc_list:
+                    lines.append(key + " " + desc)
+            data = "\n".join(lines)
+            file1 = open(filename, "w")
+            file1.write(data)
+            file1.close()
+            return filename
 
-@ensure_annotations
-def load_bin(path: Path) -> Any:
-    """load binary data
+        except Exception as e:
+            raise NerException(e, sys) from e
 
-    Args:
-        path (Path): path to binary file
+    @staticmethod
+    def save_txt_file(output_file_path: str, data: list) -> Path:
+        try:
+            with open(output_file_path, "w") as file:
+                file.writelines("% s\n" % line for line in data)
 
-    Returns:
-        Any: object stored in the file
-    """
-    data = joblib.load(path)
-    logger.info(f"binary file loaded from: {path}")
-    return data
+            return output_file_path
 
+        except Exception as e:
+            raise NerException(e, sys) from e
 
+    @staticmethod
+    def max_length_desc(descriptions: dict) -> int:
+        try:
+            all_desc = list()
+            for key in descriptions.keys():
+                [all_desc.append(d) for d in descriptions[key]]
+            return max(len(d.split()) for d in all_desc)
 
-@ensure_annotations
-def get_size(path: Path) -> str:
-    """get size in KB
-
-    Args:
-        path (Path): path of the file
-
-    Returns:
-        str: size in KB
-    """
-    size_in_kb = round(os.path.getsize(path)/1024)
-    return f"~ {size_in_kb} KB"
-
-
-
-
+        except Exception as e:
+            raise NerException(e, sys) from e
