@@ -1,23 +1,15 @@
-import os
-import sys
 import logging
+import os
+from src.store_demand_forecasting.constants import *
 
-logging_str = "[%(asctime)s: %(levelname)s: %(module)s: %(message)s]"
+logs_path = os.path.join(os.getcwd(), "logs", TIMESTAMP)
 
-log_dir = "logs"
+os.makedirs(logs_path, exist_ok=True)
 
-log_filepath = os.path.join(log_dir, "running_log.log")
-os.makedirs(log_dir, exist_ok=True)
-
+LOG_FILE_PATH = os.path.join(logs_path, LOGS_FILE_NAME)
 
 logging.basicConfig(
-    level = logging.INFO,
-    format = logging_str,
-
-    handlers=[
-        logging.FileHandler(log_filepath),
-        logging.StreamHandler(sys.stdout)
-    ]
+    filename=LOG_FILE_PATH,
+    format="[ %(asctime)s ] %(lineno)d %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
 )
-
-logger = logging.getLogger("mlProjectLogger")
