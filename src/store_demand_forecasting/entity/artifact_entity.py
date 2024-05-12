@@ -6,3 +6,8 @@ from dataclasses import dataclass
 class DataIngestionArtifacts:
     zip_data_file_path: str
     csv_data_file_path: str
+
+@dataclass
+class DataTransformationArtifacts:
+    final_data_file_path : str
+    
