@@ -74,6 +74,8 @@ class TrainPipeline:
             return data_transformation_artifact
         except Exception as e:
             raise NerException(e, sys) from e
+    
+    #This method starts model trainer.
     def start_model_trainer(self) -> ModelTrainerConfig:
         logging.info("Entered Model Building in training pipeline")
         try:
@@ -82,7 +84,7 @@ class TrainPipeline:
             logging.info(f"Creating {directory_path}")
 
             logging.info("Starting Model Trainer")
-            #Make object of data transformation config and all the initate data transformation function.
+            #Make object of model transformation config and all the initate model transformation function.
             model_trainer = ModelTrainer(
                 model_trainer_config=self.model_trainer_config
             )
