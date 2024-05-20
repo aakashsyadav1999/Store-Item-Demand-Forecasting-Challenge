@@ -1,0 +1,10 @@
+requests
+pandas 
+numpy 
+scikit-learn
+dill
+pyyaml
+ensure
+lightgbm
+
+-e .
