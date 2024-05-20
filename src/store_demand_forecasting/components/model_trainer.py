@@ -94,14 +94,14 @@ class ModelTrainer:
 
     def initiate_model_trainer(self):
 
-        logging.info("Entered the initiate_data_transformation method of the data ingestion class")
+        logging.info("Entered the initiate_model_trainer method of the model trainer class")
         try:
             os.makedirs(
                 self.model_trainer_config.model_trainer_dir,exist_ok=True
             )
 
             self.train()
-            
+
         except Exception as e:
             raise e
 
