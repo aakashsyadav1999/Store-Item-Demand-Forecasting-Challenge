@@ -7,14 +7,18 @@ import stat
 from src.store_demand_forecasting.constants import *
 from src.store_demand_forecasting.entity.artifact_entity import DataTransformationArtifacts
 from src.store_demand_forecasting.entity.config_entity import DataTransformationConfig
-
 from src.store_demand_forecasting.logger import logging
+
+from sklearn.model_selection import train_test_split
+
 
 #class for initiating all methods
 class DataTransformation:
+
     def __init__(self,data_transformation_config:DataTransformationConfig,data_transformation_artifacts = DataTransformationArtifacts):
         self.data_transformation_config = data_transformation_config
         self.data_transformation_artifacts = data_transformation_artifacts
+
 
     #funtion for cleaning unwanted parts from data
     def clean_raw_data(self):
@@ -27,6 +31,26 @@ class DataTransformation:
             return df
         except Exception as e:
             print(e)
+
+
+    def split_train_test_split(self,df):
+        try:
+            df = pd.read_csv(self.data_transformation_config.read_csv)
+            train,test = train_test_split(df,test_size=0.2,random_state=42)
+
+            train.to_csv(os.path.join(self.data_transformation_config.data_transformation_dir,'train.csv'),index=False)
+            test.to_csv(os.path.join(self.data_transformation_config.data_transformation_dir,'test.csv'),index=False)
+            
+            logging.info("Data splitted into train and test data.")
+            logging.info(f'Shape of train data is {train.shape}')
+            logging.info(f'Shape of test data is {test.shape}')
+        
+            return train, test
+        
+        except Exception as e:
+            logging.error(f"Error in split_train_test_data: {e}")
+            raise
+
 
     #saving data into allowed path for model training and model prediction.
     def save_data(self, df):
@@ -53,6 +77,9 @@ class DataTransformation:
             df = self.clean_raw_data()
             logging.info(f"Cleaning data")
 
+            self.split_train_test_split(df)
+            logging.info(f"Train-Test Split")
+
             #saving file
             final_data_file_path = self.save_data(df=df)
             logging.info(f"Saving data into the directory")
@@ -64,5 +91,3 @@ class DataTransformation:
 
         except Exception as e:
             raise e
-
-    
