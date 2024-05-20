@@ -19,3 +19,23 @@ LOCAL_FILE_PATH = "demand-forecasting-kernels-only.csv"
 DATA_TRANSFORMATION_DIR = "DataTransformationArtifacts"
 TRANSFORMED_FILE_NAME = 'final.csv'
 CSV_FILE_NAME = r'D:\VS code files\store_item_demand_forecasting_challenge\artifacts\DataIngestionArtifacts\train.csv'
+
+#Model Trainer
+LGB_PARAMS = {
+    'metric': 'mae',
+    'num_leaves': 10,
+    'learning_rate': 0.02,
+    'feature_fraction': 0.8,
+    'max_depth': 5,
+    'verbose': 0,
+    'nthread': -1
+}
+MODEL_TRAINING_ARTIFACTS_DIR = "ModelTrainingArtifacts"
+TRAIN_DATA = r'D:\VS code files\store_item_demand_forecasting_challenge\artifacts\DataTransformationArtifacts\train.csv'
+TEST_DATA = r'D:\VS code files\store_item_demand_forecasting_challenge\artifacts\DataTransformationArtifacts\test.csv'
+MASTER_DATA = r'D:\VS code files\store_item_demand_forecasting_challenge\artifacts\DataTransformationArtifacts\final.csv'
+MODEL_NAME = 'model.joblib'
+
+
+APP_HOST = "0.0.0.0"
+APP_PORT = 8080
