@@ -14,6 +14,7 @@ ROOT_DIR= "DataIngestionArtifacts"
 SOURCE_URL= "https://drive.google.com/file/d/12TOieo_IuboUIG25GmKjKh0G2q3UfBXA/view?usp=sharing"
 UNZIP_DIR= ROOT_DIR
 LOCAL_FILE_PATH = "sample_submission.zip"
+UNZIP_DIR_CSV_DATA = "DataTransformationArtifacts"
 
 #Data Transformation
 DATA_TRANSFORMATION_DIR = "DataTransformationArtifacts"
