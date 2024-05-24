@@ -24,6 +24,10 @@ class DataIngestionConfig:
 
         self.unzip_dir:str = UNZIP_DIR
 
+        self.unzip_csv_data:str = os.path.join(
+            ARTIFACTS_DIR,UNZIP_DIR_CSV_DATA
+        )
+
 
 #Data Transformation
 @dataclass
