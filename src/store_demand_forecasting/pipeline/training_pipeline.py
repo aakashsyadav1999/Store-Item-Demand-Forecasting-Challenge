@@ -1,6 +1,5 @@
 import sys
 import time
-from time import time
 import stat
 from src.store_demand_forecasting.constants import *
 
@@ -47,8 +46,7 @@ class TrainPipeline:
             logging.info(f"Creating {directory_path}")
             logging.info("Getting the data from Google drive storage")
             data_ingestion = DataIngestion(
-                data_ingestion_config=self.data_ingestion_config,
-                data_transformation_config=self.data_transformation_config
+                data_ingestion_config=self.data_ingestion_config
             )
             data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
             logging.info("Got the data from Google drive storage")
@@ -107,7 +105,6 @@ class TrainPipeline:
         try:
             logging.info("Started Model training >>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             data_ingestion_artifact = self.start_data_ingestion()
-            time.sleep(10)  # Add a sleep of 10 seconds
             data_transformation_artifact = self.start_data_transformation()
             model_transformations = self.start_model_trainer()
         except Exception as e:
