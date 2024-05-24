@@ -15,13 +15,14 @@ class DataIngestionConfig:
         self.data_ingestion_artifacts_dir:str = os.path.join(
             ARTIFACTS_DIR,ROOT_DIR
         )
+
         self.source_url:str = SOURCE_URL
+
         self.local_data_file:str = os.path.join(
             self.data_ingestion_artifacts_dir,LOCAL_FILE_PATH
         )
-        self.unzip_dir:str = os.path.join(
-            self.data_ingestion_artifacts_dir
-        )
+
+        self.unzip_dir:str = UNZIP_DIR
 
 
 #Data Transformation
