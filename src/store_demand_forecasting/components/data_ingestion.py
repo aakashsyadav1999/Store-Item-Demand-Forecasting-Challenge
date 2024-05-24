@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import time
 import os
 from zipfile import ZipFile
 from pathlib import Path
@@ -18,10 +19,9 @@ from src.store_demand_forecasting.utils.common import MainUtils
 
 class DataIngestion:
 
-    def __init__(self,data_ingestion_config:DataIngestionConfig,data_transformation_config:DataTransformationConfig) -> None:
+    def __init__(self,data_ingestion_config:DataIngestionConfig) -> None:
 
         self.data_ingestion_config = data_ingestion_config
-        self.data_transformation_config = data_transformation_config
 
 
     def download_file(self)-> str:
@@ -49,7 +49,7 @@ class DataIngestion:
         """
         Extracts the zip file into the data directory
         """
-        unzip_path = self.data_transformation_config.data_transformation_dir
+        unzip_path = self.data_ingestion_config.unzip_csv_data
         os.makedirs(unzip_path, exist_ok=True)
         try:
             zip_file_path = self.data_ingestion_config.local_data_file
@@ -83,6 +83,8 @@ class DataIngestion:
             #Downloading data from given URL
             self.download_file()
             logging.info(f"Downloading data from given url {self.data_ingestion_config.source_url}")
+
+
 
             #extract file
             self.extract_zip_file()
