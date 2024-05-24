@@ -6,5 +6,6 @@ dill
 pyyaml
 ensure
 lightgbm
+gdown
 
 -e .
