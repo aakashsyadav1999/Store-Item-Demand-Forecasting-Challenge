@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 import numpy as np
 from dataclasses import dataclass
 import os
@@ -72,6 +73,7 @@ class DataTransformation:
             )
             os.chmod(self.data_transformation_config.data_transformation_dir,stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
             logging.info(f"Creating {(self.data_transformation_config.data_transformation_dir)} directory")
+
 
             #Downloading data from given URL
             df = self.clean_raw_data()
