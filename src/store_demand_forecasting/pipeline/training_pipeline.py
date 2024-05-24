@@ -1,4 +1,6 @@
 import sys
+import time
+from time import time
 import stat
 from src.store_demand_forecasting.constants import *
 
@@ -105,6 +107,7 @@ class TrainPipeline:
         try:
             logging.info("Started Model training >>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             data_ingestion_artifact = self.start_data_ingestion()
+            time.sleep(10)  # Add a sleep of 10 seconds
             data_transformation_artifact = self.start_data_transformation()
             model_transformations = self.start_model_trainer()
         except Exception as e:
